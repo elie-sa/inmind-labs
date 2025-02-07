@@ -18,7 +18,7 @@ public class UserService : IUserService
 
     public Models.User GetUserById(int id)
     {
-        var user = _users.First(u => u.Id == id);
+        var user = _users.FirstOrDefault(u => u.Id == id);
         if (user == null)
         {
             throw new KeyNotFoundException("The user id provided is invalid");   
@@ -36,7 +36,7 @@ public class UserService : IUserService
 
         if (user.Id == 0)
         {
-            throw new ArgumentException("A user id must be provided", nameof(user.Id));
+            throw new ArgumentException("A valid user id must be provided", nameof(user.Id));
         }
 
         var toChange = _users.FirstOrDefault(u => u.Id == user.Id);

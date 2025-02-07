@@ -32,16 +32,9 @@ public class UserController : ControllerBase
     [HttpGet]
     [Route("{id}")]
     public IActionResult Get(int id)
-    {
-        try
-        {
-            var user = _userService.GetUserById(id);
-            return Ok(user);
-        }
-        catch (KeyNotFoundException exception)
-        {
-            return NotFound(new { message = exception.Message });
-        }
+    {   
+        var user = _userService.GetUserById(id);
+        return Ok(user);
     }
 
     // Question 8
@@ -51,23 +44,9 @@ public class UserController : ControllerBase
     [Route("edit")]
     public IActionResult Edit([FromBody] User user)
     {
-        try
-        {
-            _userService.EditUser(user);
-            return Ok(new { message = "User updated" });
-        }
-        catch (ArgumentNullException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        
+        _userService.EditUser(user);
+        return Ok(new { message = "User updated" });
     }
 
     // Question 9
@@ -93,15 +72,8 @@ public class UserController : ControllerBase
     [Route("uploadPicture")]
     public async Task<IActionResult> UploadPicture(IFormFile file)
     {
-        try
-        {
-            await _userService.UploadPicture(file);
-            return Ok(new { message = "File uploaded successfully" });
-        }
-        catch (ArgumentNullException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        await _userService.UploadPicture(file);
+        return Ok(new { message = "File uploaded successfully" });
     }
 
     // Question 10
@@ -111,14 +83,7 @@ public class UserController : ControllerBase
     [Route("delete/{id}")]
     public IActionResult Delete(int id)
     {
-        try
-        {
-            _userService.DeleteUser(id);
-            return Ok(new { message = "User deleted successfully" });
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        _userService.DeleteUser(id);
+        return Ok(new { message = "User deleted successfully" });
     }
 }

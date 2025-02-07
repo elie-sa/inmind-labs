@@ -1,19 +1,11 @@
 {
   "Version": 1,
-  "Hash": "D+jE4t+WNtQEMKlmLzJf+g7jzFzFXXhtJLhvfaY5Xxg=",
+  "Hash": "uWSXbGwIRX8iw0RUubI1k57c6zuKS6SybVBo48JdfgY=",
   "Source": "Lab1",
   "BasePath": "_content/Lab1",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [
-    {
-      "Name": "Lab1\\wwwroot",
-      "Source": "Lab1",
-      "ContentRoot": "C:\\Users\\Esawm\\RiderProjects\\Lab1\\Lab1\\wwwroot\\",
-      "BasePath": "_content/Lab1",
-      "Pattern": "**"
-    }
-  ],
+  "DiscoveryPatterns": [],
   "Assets": []
 }

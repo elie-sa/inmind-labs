@@ -4,13 +4,11 @@ namespace Lab1.Models;
 
 public class User
 {
-    [Required(ErrorMessage = "Please enter your Id")]
-    public long Id { get; set; }
     
-    [Required(ErrorMessage = "Please enter your Name")]
-    public string Name { get; set; }
+    public required long Id { get; set; }
     
-    [Required(ErrorMessage = "Please enter your Email")]
+    public required string Name { get; set; }
+    
     [EmailAddress(ErrorMessage = "Please enter a valid email address")]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 }
