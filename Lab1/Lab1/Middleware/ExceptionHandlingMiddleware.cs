@@ -4,7 +4,7 @@ namespace Lab1.Middleware;
 
 public class ExceptionHandlingMiddleware: IExceptionHandler
 {
-    public ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         
         var statusCode = exception switch
@@ -22,8 +22,8 @@ public class ExceptionHandlingMiddleware: IExceptionHandler
         
         httpContext.Response.StatusCode = statusCode;
         httpContext.Response.ContentType = "application/json";
-        httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
+        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
 
-        return ValueTask.FromResult(true);
+        return true;
     }
 }

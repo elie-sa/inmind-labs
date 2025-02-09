@@ -27,12 +27,6 @@ public class ObjectMapperService: IObjectMapperService
                     {
                         destinationProp.SetValue(destination, sourceProp.GetValue(source));
                     }
-                    else
-                    {
-                        // if they have the same name but different type we try to ChangeType()
-                        var value = Convert.ChangeType(sourceProp.GetValue(source), destinationProp.PropertyType);
-                        destinationProp.SetValue(destination, value);
-                    }
                 }
                
             }

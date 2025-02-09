@@ -19,6 +19,11 @@ public class ObjectMappingController: ControllerBase
     [Route("mapUser")]
     public IActionResult MapUser([FromBody] User user)
     {
+        if (user is null)
+        {
+            throw new ArgumentNullException(nameof(user));
+        }
+        
         Person person = _objectMapperService.Map<User, Person>(user);
         return Ok(person);
     }
