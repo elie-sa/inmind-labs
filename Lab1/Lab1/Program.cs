@@ -3,6 +3,7 @@ using Lab1.Filters;
 using Lab1.Middleware;
 using Lab1.Services.User;
 using Lab1.Services.Date;
+using Lab1.Services.Library;
 using Lab1.Services.ObjectMapper;
 using Microsoft.Extensions.Options;
 
@@ -14,6 +15,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 // Adding the ObjectMapperService which was used for the Reflection & Generic Type exercise
 builder.Services.AddScoped<IObjectMapperService, ObjectMapperService>();
+
+// Adding the LibraryService which was used for the LINQ exercises
+builder.Services.AddScoped<ILibraryService, LibraryService>();
 
 // Logging middleware: singleton used to keep the logger lifetime throughout the whole application running
 builder.Services.AddScoped<IDateService, DateService>();
