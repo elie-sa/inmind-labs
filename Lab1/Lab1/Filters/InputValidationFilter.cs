@@ -4,16 +4,17 @@ using System.Text.Json;
 
 namespace Lab1.Filters;
 
-public class LoggingActionFilter: IActionFilter
+public class InputValidationFilter: IActionFilter
 {
-    private readonly ILogger<LoggingActionFilter> _logger;
+    private readonly ILogger<InputValidationFilter> _logger;
 
-    public LoggingActionFilter(ILogger<LoggingActionFilter> logger)
+    public InputValidationFilter(ILogger<InputValidationFilter> logger)
     {
         _logger = logger;
     }
     
-    public void OnActionExecuting(ActionExecutingContext context)
+    // old logger
+    /*public void OnActionExecuting(ActionExecutingContext context)
     {
         // using customDate to show the ms as well (since execution time would be very small)
         var customDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -26,8 +27,34 @@ public class LoggingActionFilter: IActionFilter
         {
             _logger.LogInformation($" {param.Key} = {param.Value}");
         }
+    }*/
+    
+    // checking for validation [Required] [EmailAddress] 
+    // users/edit if i provide a non valid email a validation error will occur
+    // i disabled .NET's default input validation to be able to view my own filter input validation in program.cs ConfigureApiBehaviorOptions
+    public void OnActionExecuting(ActionExecutingContext context)
+    {
+        if (!context.ModelState.IsValid)
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value.Errors.Any())
+                .ToDictionary(e => e.Key,
+                    e => e.Value.Errors.Select(err => err.ErrorMessage).ToArray()
+                );
+
+            var problemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Input Validation Failed",
+                Extensions = { ["errors"] = errors }
+            };
+
+            context.Result = new BadRequestObjectResult(problemDetails);
+        }
     }
 
+    
+    // kept this function as a logger since i wanted to also demonstrate the OnActionExecuted and this filter was the only way to show the response body in the logger
     public void OnActionExecuted(ActionExecutedContext context)
     {
         var customDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");

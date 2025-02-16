@@ -86,4 +86,5 @@ public class UserController : ControllerBase
         _userService.DeleteUser(id);
         return Ok(new { message = "User deleted successfully" });
     }
+    
 }

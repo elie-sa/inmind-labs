@@ -24,11 +24,15 @@ builder.Services.AddScoped<IDateService, DateService>();
 
 // Error Handling Middleware injected using the custom ExceptionHandlingMiddleware implementing the IExceptionHandler
 builder.Services.AddExceptionHandler<ExceptionHandlingMiddleware>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddSingleton<RequestLoggingMiddleware>();
 builder.Services.AddControllers(options =>
     {
-        options.Filters.Add<LoggingActionFilter>();
+        options.Filters.Add<InputValidationFilter>();
+    }).ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -38,11 +42,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-
-app.UseSwagger();
-app.UseSwaggerUI();
 
 // Added the middleware "ExceptionHandlingMiddleware" to the pipeline
 // I am throwing the exceptions using the services (UserService & DataService) and catching them in the ExceptionHandlingMiddleware 
