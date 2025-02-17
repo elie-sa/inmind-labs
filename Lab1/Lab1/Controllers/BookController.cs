@@ -9,7 +9,6 @@ namespace Lab1.Controllers;
 public class BookController: ODataController
 {
     private readonly LibrarydbContext _context;
-
     
     public BookController(LibrarydbContext context)
     {

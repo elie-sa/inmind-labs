@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace Lab1.Controllers;
 
-[Route("odata/Authors")]
 public class AuthorController: ODataController
 {
     private readonly LibrarydbContext _context;
@@ -14,11 +13,46 @@ public class AuthorController: ODataController
     {
         _context = context;
     }
-
+    
+    [Route("odata/Authors")]
     [EnableQuery]
     public IQueryable<Author> Get()
     {
         return _context.Authors;
+    }
+    
+    // had to use HasValue since the attributes are nullable
+    [Route("authors/sameYear")]
+    [HttpGet]
+    public IActionResult GetSameYearAuthors()
+    {
+        var authors = _context.Authors
+            .Where(a => a.BirthDate.HasValue)
+            .GroupBy(a => a.BirthDate.Value.Year) 
+            .Select(b => new
+            {
+                BirthYear = b.Key,
+                Authors = b.ToList()
+            }).ToList();
+
+        return Ok(authors);
+    }
+    
+    [Route("authors/sameYearCountry")]
+    [HttpGet]
+    public IActionResult GetSameYearCountryAuthors()
+    {
+        var authors = _context.Authors
+            .Where(a => a.BirthDate.HasValue) 
+            .GroupBy(a => new { a.BirthDate.Value.Year, a.Country })
+            .Select(b => new
+            {
+                BirthYear = b.Key.Year,
+                Country = b.Key.Country,
+                Authors = b.ToList()
+            }).ToList();
+
+        return Ok(authors);
     }
 }
 
@@ -33,10 +67,5 @@ I used this for grouping
 
 I tried using the aggregate to add all the properties of the author to the group but it didn't work
 
-I also tried to aggregate the AuthorId alone since the other properties were nullable and that also gave me errors with aggregate
-When i tried aggregate(AuthorId with first as Id) without groupby it worked 
-http://localhost:5075/odata/Authors?$apply=groupby((BirthDate), aggregate(AuthorId with first as Id))
-
-I will use regular controller functions instead same as the ones in Lab3
-
+so I used regular controller functions instead same as the ones in Lab3
 */
