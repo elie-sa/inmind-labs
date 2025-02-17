@@ -1,11 +1,15 @@
 using Lab1;
 using Lab1.Filters;
 using Lab1.Middleware;
+using Lab1.Models;
 using Lab1.Services.User;
 using Lab1.Services.Date;
-using Lab1.Services.Library;
 using Lab1.Services.ObjectMapper;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.OData;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +20,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 // Adding the ObjectMapperService which was used for the Reflection & Generic Type exercise
 builder.Services.AddScoped<IObjectMapperService, ObjectMapperService>();
 
-// Adding the LibraryService which was used for the LINQ exercises
-builder.Services.AddScoped<ILibraryService, LibraryService>();
+// Adding the DB Context
+builder.Services.AddDbContext<LibrarydbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Host=localhost;Database=LibraryDB;Username=postgres;Password=admin;")));
 
 // Logging middleware: singleton used to keep the logger lifetime throughout the whole application running
 builder.Services.AddScoped<IDateService, DateService>();
@@ -33,6 +38,10 @@ builder.Services.AddControllers(options =>
     }).ConfigureApiBehaviorOptions(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
+    }).AddOData(opt =>
+    {
+        opt.Select().Expand().Filter().Select().OrderBy().Count().SetMaxTop(100);
+        opt.AddRouteComponents("odata", GetEdmModel());
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -61,3 +70,12 @@ app.MapControllers();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.Run();
+
+static IEdmModel GetEdmModel()
+{
+    var builder = new ODataConventionModelBuilder();
+    builder.EntitySet<Book>("Books");
+    builder.EntitySet<Author>("Authors");
+    return builder.GetEdmModel();
+}
+
